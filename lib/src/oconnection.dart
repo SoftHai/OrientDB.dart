@@ -4,7 +4,7 @@ abstract class OConnection {
 
   bool get IsConnected;
   
-  Future Connect(String server, int port, String database, String username, String password);
+  Future Connect();
   
   Future<String> ExecuteCommand(String language, String command, {int limit: 20});
   

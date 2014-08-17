@@ -30,19 +30,23 @@ Example
 =========
 This is a very early version, currently you can work with it as followed
 ```dart
-  var connection = new ORestConnection();
-  var result = connection.Connect("localhost", 2480, "database", "username", "password")
-  .then((successful) {
+  var oClient = new OClient.Http("localhost", 2480, "database", "username", "password");
+
+  var result = oClient.Connect();
+  result.then((successful) {
     if(successful) {
-      return connection.ExecuteCommand("sql", "select * from v", limit: 1).then((content) {
-        // Do something with the result
-        var jsonObj = JSON.decoder.convert(content);
-        // close the connection
-        return connection.Disconnect();
+      // Connecting successful
+      return oClient.ExecuteSQLCommand_JsonObj("select * from v", maxResults: 20).then((jsonMap) {
+        
+        for (var vertex in jsonMap["result"]) {
+          print(vertex["@class"]);
+        }
+        
+        return oClient.Connection.Disconnect();
       });
     }
     else {
-      // Connection was not successful
+      // Error during connecting to the server
     }
   });
 ```
