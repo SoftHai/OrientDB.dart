@@ -32,12 +32,29 @@ class ORestConnection implements OConnection {
     }
   }
   
-  Future<String> ExecuteCommand(String language, String command, {int limit: 20}) {
+  Future<String> ExecuteCommand(OCommandScriptType language, String command, {int limit: 20}) {
     if(this._client != null) {
       
       return this._client
-        .post("${this._serverAdress}/command/${this._database}/$language/${HTML_ESCAPE.convert(command)}/$limit", headers: this._BuildRequestHeader())
+        .post("${this._serverAdress}/command/${this._database}/${language.Value}/${HTML_ESCAPE.convert(command)}/$limit", headers: this._BuildRequestHeader())
         .then(this._HandleExecuteCommandResponse);
+    }
+    
+    throw new ConnectionException("No open connection");
+  }
+  
+  Future<String> ExecuteBatch(bool transaction, Iterable<OBatchOperation> operations) {
+    if(this._client != null) {
+      Map bodyContent = { "transaction": transaction, operations: []};
+      for(var operation in operations) {
+        bodyContent["operations"].Add(operation.toMap());
+      }
+      
+      var content = JSON.encoder.convert(bodyContent);
+      
+      return this._client
+        .post("${this._serverAdress}/batch/${this._database}", body: content , headers: this._BuildRequestHeader())
+        .then(this._HandleExecuteBatchResponse);
     }
     
     throw new ConnectionException("No open connection");
@@ -104,10 +121,19 @@ class ORestConnection implements OConnection {
       return response.body;
     }
     else {
-      throw new ExecutionException("Error during executing: ${response.reasonPhrase}", response.statusCode);
+      throw new ExecutionException("Error during executing: ${response.reasonPhrase} - ${response.body}", response.statusCode);
     }
   }
 
+  String _HandleExecuteBatchResponse(http.Response response) {
+    if(response.statusCode == 200) {
+      return response.body;
+    }
+    else {
+      throw new ExecutionException("Error during executing: ${response.reasonPhrase} - ${response.body}", response.statusCode);
+    }
+  }
+  
   String _HandleGetDatabaseSchemaResponse(http.Response response) {
     if(response.statusCode == 200) {
       return response.body;

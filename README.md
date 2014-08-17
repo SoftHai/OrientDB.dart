@@ -30,25 +30,47 @@ Example
 =========
 This is a very early version, currently you can work with it as followed
 ```dart
-  var oClient = new OClient.Http("localhost", 2480, "database", "username", "password");
+// Creating an custom object stored in the database
+class Custom extends OObject {
 
+  String get Name => super.JSONMap["Name"];
+  void set Name(String value) { super.JSONMap["Name"] = value; }
+
+  Custom(String className) : super(className);
+
+  Custom.FormJson(String json) : super.FormJson(json);
+
+  Custom.FormMap(Map json) : super.FormMap(json);
+}
+
+main() {
+  // Creating an http client
+  var oClient = new OClient.Http("localhost", 2480, "TestGraph", "root", "root");
+
+  // Connecting to the database
   var result = oClient.Connect();
   result.then((successful) {
     if(successful) {
       // Connecting successful
-      return oClient.ExecuteSQLCommand_JsonObj("select * from v", maxResults: 20).then((jsonMap) {
-        
-        for (var vertex in jsonMap["result"]) {
-          print(vertex["@class"]);
-        }
-        
-        return oClient.Connection.Disconnect();
+      return oClient.CommandScalar(ScriptType.SQL, "select from custom", new OCustomParser<CustomObject>(), maxResults: 20)
+        .then((result) {
+
+          // Iterate throw all returned object
+          result.toList().then((list) => list.forEach((obj) {
+            print(obj.Name);
+          }));
+
+          return oClient.Connection.Disconnect();
+      }).catchError((ex) {
+        // Handling execution error e.g. syntax error in SQL
+        print(ex);
       });
     }
     else {
-      // Error during connecting to the server
+
     }
   });
+}
 ```
 
 Documentation

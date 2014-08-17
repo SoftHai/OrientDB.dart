@@ -18,14 +18,31 @@ class OClient {
     return this._connection.Connect();
   }
   
-  Future<String> ExecuteSQLCommand_Raw(String command, {maxResults: 20}) {
-    return this._connection.ExecuteCommand("sql", command, limit: maxResults);
+  Future<String> CommandRaw(OCommandScriptType language, String command, {maxResults: 20}) {
+    return this._connection.ExecuteCommand(language, command, limit: maxResults);
   }
   
-  Future<Map> ExecuteSQLCommand_JsonObj(String command, {maxResults: 20}) {
+  Future<Map> CommandMap(OCommandScriptType language, String command, {maxResults: 20}) {
     return this._connection
-      .ExecuteCommand("sql", command, limit: maxResults)
+      .ExecuteCommand(language, command, limit: maxResults)
       .then(this._ParseJSON);
+  }
+  
+  Future<Stream<OObject>> CommandStream(OCommandScriptType language, String command, OObjectParser parser, {maxResults: 20}) {
+    return this._connection
+      .ExecuteCommand(language, command, limit: maxResults)
+      .then(parser._Parser);
+  }
+  
+  Future<dynamic> CommandScalar(OCommandScriptType language, String command, String scalarPropertyName, {maxResults: 20}) {
+    return this._connection
+      .ExecuteCommand(language, command, limit: maxResults)
+      .then(_ParseJSON)
+      .then((map) => map["result"][0][scalarPropertyName]);
+  }
+  
+  Future<String> BatchRaw(bool transaction, Iterable<OBatchOperation> operations) {
+    return this._connection.ExecuteBatch(transaction, operations);
   }
   
   dynamic _ParseJSON(String json) {
