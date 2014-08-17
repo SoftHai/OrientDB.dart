@@ -3,7 +3,7 @@ part of softhai.orientdb_dart;
 
 class OClient {
 
-  OConnection _connection;
+  final OConnection Connection;
   
-  OClient(this._connection);
+  OClient(this.Connection);
 }

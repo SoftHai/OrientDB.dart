@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:crypto/crypto.dart';
 
 part 'src/oclient.dart';
-part 'src/connectionexception.dart';
+part 'src/connection_exception.dart';
+part 'src/execution_exception.dart';
 part 'src/oconnection.dart';
-part 'src/orestconnection.dart';
+part 'src/orest_connection.dart';

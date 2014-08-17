@@ -10,6 +10,8 @@ class ORestConnection implements OConnection {
   String _authString;
   String _database;
   
+  bool get IsConnected => this._client != null;
+  
   Future<bool> Connect(String server, int port, String database, String username, String password) {
 
     this._server = server;
@@ -44,7 +46,7 @@ class ORestConnection implements OConnection {
             return response.body;
           }
           else {
-            return response.body;
+            throw new ExecutionException("Error during executing: ${response.reasonPhrase}", response.statusCode);
           }
       });
     }
@@ -60,7 +62,7 @@ class ORestConnection implements OConnection {
             return response.body;
           }
           else {
-            return "Error";
+            throw new ExecutionException("Error during executing: ${response.reasonPhrase}", response.statusCode);
           }
       });
     }
@@ -72,7 +74,7 @@ class ORestConnection implements OConnection {
     if(this._client != null) {
       return this._client.get("http://${this._server}:${this._port}/disconnect")
         .then((response) {
-        // Getting always 401 Unauthorized - by google it it looks like a feature not a bug. Ignoring return state and closing all
+        // Getting always 401 Unauthorized - googled it, it looks like a feature not a bug. Ignoring return state and closing all
         this._client.close();
         this._client = null;
       });
