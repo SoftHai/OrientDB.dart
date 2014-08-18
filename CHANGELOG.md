@@ -5,9 +5,7 @@ Legend: (NEW) New Feature - (IMP) Improvement - (FIX) Bugfix - (!!!) Attantion (
 ```
 
 ##Version 0.1.0
-**Release date: *Unreleased* **
-
-
+**Release date: *18.08.2014* **
 
 - **(NEW)** Implement HTTP Connection
 - **(NEW)** Implement OClient
