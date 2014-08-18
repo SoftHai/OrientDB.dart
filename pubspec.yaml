@@ -1,8 +1,8 @@
-name: OrientDB_dart
+name: orientdb_dart
 version: 0.1.0
 author: SoftHai <softhai@gmx.de>
 description: A dart client to get access to an OrientDB instance
 homepage: https://github.com/SoftHai/orientdb_dart
 documentation: https://github.com/SoftHai/orientdb_dart
 dependencies:
-  http: any
+  http: '>=0.11.1+1 <0.12.0'
