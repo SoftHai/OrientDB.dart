@@ -31,16 +31,16 @@ Example
 This is a very early version, currently you can work with it as followed
 ```dart
 // Creating an custom object stored in the database
-class Custom extends OObject {
+class Person extends OObject {
 
   String get Name => super.JSONMap["Name"];
   void set Name(String value) { super.JSONMap["Name"] = value; }
 
-  Custom(String className) : super(className);
+  Person(String className) : super(className);
 
-  Custom.FormJson(String json) : super.FormJson(json);
+  Person.FormJson(String json) : super.FormJson(json);
 
-  Custom.FormMap(Map json) : super.FormMap(json);
+  Person.FormMap(Map json) : super.FormMap(json);
 }
 
 main() {
@@ -52,12 +52,13 @@ main() {
   result.then((successful) {
     if(successful) {
       // Connecting successful
-      return oClient.CommandScalar(ScriptType.SQL, "select from custom", new OCustomParser<CustomObject>(), maxResults: 20)
+      return oClient.CommandStream(OCommandScriptType.SQL, "select * from Person",
+      								new OCustomParser<Person>(), maxResults: 20)
         .then((result) {
 
           // Iterate throw all returned object
-          result.toList().then((list) => list.forEach((obj) {
-            print(obj.Name);
+          result.toList().then((persons) => persons.forEach((person) {
+            print(person.Name);
           }));
 
           return oClient.Connection.Disconnect();
@@ -79,24 +80,28 @@ Documentation
 
 Changelog
 =========
-
+See [here](/CHANGELOG.md)
 
 Roadmap
 =========
-0.1-Beta (unreleased)
+0.1 (in progress)
  * Basic Rest HTTP protocol implementation
+ * Basic Mapping Support (ODM)
 
-0.2-Beta
+0.2
  * Full Rest HTTP protocol implementation
- * Parsing results (Json) to objects (OR-Mapping)
+ * SQL Injection protection
+
+0.3
+ * Parsing results (Json) to objects (OD-Mapping)
   * Mapping by name / reflections
   * Mapping by attributes
   * ?
 
-0.3-Beta
+0.4
  * Creating/updating the database schema from registered objects
 
-0.4-Beta
+0.5
  * Creating an high level query language (something like LINQ in C#)
 
 Later
