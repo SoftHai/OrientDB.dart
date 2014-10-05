@@ -23,6 +23,7 @@ class OBatchUpdate extends OBatchOperation {
   Map toMap() {
     var map = super.toMap();
     map["record"] = this.Record.toMap();
+    return map;
   }
 }
 
@@ -36,6 +37,7 @@ class OBatchCreate extends OBatchOperation {
   Map toMap() {
     var map = super.toMap();
     map["record"] = this.Record.toMap();
+    return map;
   }
 }
 
@@ -49,6 +51,7 @@ class OBatchDelete extends OBatchOperation {
   Map toMap() {
     var map = super.toMap();
     map["record"] = { "@rid": this.RecordID.toString() };
+    return map;
   }
 }
 
@@ -65,6 +68,7 @@ class OBatchCommand extends OBatchOperation {
     var map = super.toMap();
     map["language"] = this.Language.Value;
     map["command"] = this.Command;
+    return map;
   }
 }
 
@@ -81,5 +85,6 @@ class OBatchScript extends OBatchOperation {
     var map = super.toMap();
     map["language"] = this.Language.Value;
     map["script"] = this.Script;
+    return map;
   }
 }

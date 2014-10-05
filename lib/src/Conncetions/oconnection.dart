@@ -6,7 +6,7 @@ abstract class OConnection {
   
   Future Connect();
   
-  Future<String> ExecuteCommand(OCommandScriptType language, String command, {int limit: 20});
+  Future<String> ExecuteCommand(OCommandScriptType language, String command, {int limit: 20, String fetchPlan: "*:1"});
   
   Future<String> ExecuteBatch(bool transaction, Iterable<OBatchOperation> operations);
   

@@ -18,25 +18,25 @@ class OClient {
     return this._connection.Connect();
   }
   
-  Future<String> CommandRaw(OCommandScriptType language, String command, {maxResults: 20}) {
-    return this._connection.ExecuteCommand(language, command, limit: maxResults);
+  Future<String> CommandRaw(OCommandScriptType language, String command, {int maxResults: 20, String fetchPlan: "*:1"}) {
+    return this._connection.ExecuteCommand(language, command, limit: maxResults, fetchPlan: fetchPlan);
   }
   
-  Future<Map> CommandMap(OCommandScriptType language, String command, {maxResults: 20}) {
+  Future<Map> CommandMap(OCommandScriptType language, String command, {int maxResults: 20, String fetchPlan: "*:1"}) {
     return this._connection
-      .ExecuteCommand(language, command, limit: maxResults)
+      .ExecuteCommand(language, command, limit: maxResults, fetchPlan: fetchPlan)
       .then(this._ParseJSON);
   }
   
-  Future<Stream<OObject>> CommandStream(OCommandScriptType language, String command, OObjectParser parser, {maxResults: 20}) {
+  Future<Stream<OObject>> CommandStream(OCommandScriptType language, String command, OBaseObjectParser parser, {int maxResults: 20, String fetchPlan: "*:1"}) {
     return this._connection
-      .ExecuteCommand(language, command, limit: maxResults)
+      .ExecuteCommand(language, command, limit: maxResults, fetchPlan: fetchPlan)
       .then(parser._Parser);
   }
   
-  Future<dynamic> CommandScalar(OCommandScriptType language, String command, String scalarPropertyName, {maxResults: 20}) {
+  Future<dynamic> CommandScalar(OCommandScriptType language, String command, String scalarPropertyName, {int maxResults: 20, String fetchPlan: "*:1"}) {
     return this._connection
-      .ExecuteCommand(language, command, limit: maxResults)
+      .ExecuteCommand(language, command, limit: maxResults, fetchPlan: fetchPlan)
       .then(_ParseJSON)
       .then((map) => map["result"][0][scalarPropertyName]);
   }

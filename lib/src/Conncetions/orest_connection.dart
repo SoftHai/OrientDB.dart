@@ -32,11 +32,27 @@ class ORestConnection implements OConnection {
     }
   }
   
-  Future<String> ExecuteCommand(OCommandScriptType language, String command, {int limit: 20}) {
+  Future<String> ExecuteCommand(OCommandScriptType language, String command, {int limit: 20, String fetchPlan: "*:1"}) {
+
+    return this.ExecuteCommandInPost(language, command, limit: limit);
+  }
+  
+  Future<String> ExecuteCommandInURL(OCommandScriptType language, String command, {int limit: 20, String fetchPlan: "*:1"}) { // In URL
     if(this._client != null) {
       
       return this._client
-        .post("${this._serverAdress}/command/${this._database}/${language.Value}/${HTML_ESCAPE.convert(command)}/$limit", headers: this._BuildRequestHeader())
+        .post("${this._serverAdress}/command/${this._database}/${language.Value}/${HTML_ESCAPE.convert(command)}/$limit/$fetchPlan", headers: this._BuildRequestHeader())
+        .then(this._HandleExecuteCommandResponse);
+    }
+    
+    throw new ConnectionException("No open connection");
+  }
+  
+  Future<String> ExecuteCommandInPost(OCommandScriptType language, String command, {int limit: 20, String fetchPlan: "*:1"}) { // In Post
+    if(this._client != null) {
+      
+      return this._client
+        .post("${this._serverAdress}/command/${this._database}/${language.Value}//$limit/$fetchPlan", body: command, headers: this._BuildRequestHeader())
         .then(this._HandleExecuteCommandResponse);
     }
     
@@ -45,9 +61,9 @@ class ORestConnection implements OConnection {
   
   Future<String> ExecuteBatch(bool transaction, Iterable<OBatchOperation> operations) {
     if(this._client != null) {
-      Map bodyContent = { "transaction": transaction, operations: []};
+      Map bodyContent = { "transaction": transaction, "operations": new List<Map>()};
       for(var operation in operations) {
-        bodyContent["operations"].Add(operation.toMap());
+        bodyContent["operations"].add(operation.toMap());
       }
       
       var content = JSON.encoder.convert(bodyContent);
@@ -85,6 +101,7 @@ class ORestConnection implements OConnection {
      headers['content-type'] = "application/json";
      headers['www-authenticate'] = 'Basic realm="OrientDB db-${this._database}"';
      headers['authorization'] = "Basic ${this._authString}";
+     headers['accept-encoding'] = "gzip,deflate";
      
      return headers;
   }

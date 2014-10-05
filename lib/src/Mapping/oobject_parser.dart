@@ -1,12 +1,12 @@
 part of softhai.orientdb_dart;
 
-abstract class OObjectParser {
+abstract class OBaseObjectParser {
   
   Stream<OObject> _Parser(String json);
   
 }
 
-class OCustomParser<T extends OObject> implements OObjectParser {
+class OObjectParser<T extends OObject> implements OBaseObjectParser {
   
   Stream<OObject> _Parser(String json) {
     var jsonMap = JSON.decoder.convert(json);
