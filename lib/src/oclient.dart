@@ -7,7 +7,11 @@ class OClient {
   
   OConnection get Connection => this._connection;
   
-  OClient._internal(this._connection);
+  OClient._internal(this._connection) {
+    if(this._connection == null) {
+      throw new Exception("Can't create an Client without an instance of an connection");
+    }
+  }
   
   OClient.Http(String server, int port, String database, String username, String password) 
     : this._internal(new ORestConnection(server, port, database, username, password));
@@ -16,6 +20,10 @@ class OClient {
   
   Future<bool> Connect() {
     return this._connection.Connect();
+  }
+  
+  Future Disconnect() {
+    return this._connection.Disconnect();
   }
   
   Future<String> CommandRaw(OCommandScriptType language, String command, {int maxResults: 20, String fetchPlan: "*:1"}) {

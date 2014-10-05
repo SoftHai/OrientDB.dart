@@ -76,7 +76,7 @@ main() {
 
 Documentation
 =========
-
+See [here](doc/oclient.md)
 
 Changelog
 =========
@@ -84,11 +84,11 @@ See [here](/CHANGELOG.md)
 
 Roadmap
 =========
-0.1 (in progress)
+**0.1 (Released)**
  * Basic Rest HTTP protocol implementation
  * Basic Mapping Support (ODM)
 
-0.2
+**0.2 (In Progress)**
  * Full Rest HTTP protocol implementation
  * SQL Injection protection
 
